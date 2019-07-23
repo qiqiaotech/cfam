@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whfzit.dao.ArchiveDao">
+  <resultMap id="BaseResultMap" type="com.whfzit.model.ArchiveEntity">
+    <id column="archive_id" jdbcType="INTEGER" property="archiveId" />
+    <result column="corp_name" jdbcType="VARCHAR" property="corpName" />
+    <result column="archive_code" jdbcType="VARCHAR" property="archiveCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    archive_id, corp_name, archive_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from cfam_archive
+    where archive_id = #{archiveId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByArchiveInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from cfam_archive
+    where corp_name = #{arg0,jdbcType=VARCHAR} and archive_code = #{arg1, jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cfam_archive
+    where archive_id = #{archiveId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="archive_id" keyProperty="archiveId" parameterType="com.whfzit.model.ArchiveEntity" useGeneratedKeys="true">
+    insert into cfam_archive (corp_name, archive_code)
+    values (#{corpName,jdbcType=VARCHAR}, #{archiveCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="archive_id" keyProperty="archiveId" parameterType="com.whfzit.model.ArchiveEntity" useGeneratedKeys="true">
+    insert into cfam_archive
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="corpName != null">
+        corp_name,
+      </if>
+      <if test="archiveCode != null">
+        archive_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="corpName != null">
+        #{corpName,jdbcType=VARCHAR},
+      </if>
+      <if test="archiveCode != null">
+        #{archiveCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.whfzit.model.ArchiveEntity">
+    update cfam_archive
+    <set>
+      <if test="corpName != null">
+        corp_name = #{corpName,jdbcType=VARCHAR},
+      </if>
+      <if test="archiveCode != null">
+        archive_code = #{archiveCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where archive_id = #{archiveId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.whfzit.model.ArchiveEntity">
+    update cfam_archive
+    set corp_name = #{corpName,jdbcType=VARCHAR},
+      archive_code = #{archiveCode,jdbcType=VARCHAR}
+    where archive_id = #{archiveId,jdbcType=INTEGER}
+  </update>
+</mapper>

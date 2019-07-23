@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whfzit.dao.ArchiveInOneDao">
+  <resultMap id="BaseResultMap" type="com.whfzit.model.ArchiveInOneEntity">
+    <id column="archive_id" jdbcType="INTEGER" property="archiveId" />
+    <result column="corp_name" jdbcType="VARCHAR" property="corpName" />
+    <result column="archive_code" jdbcType="VARCHAR" property="archiveCode" />
+    <result column="detail_id" jdbcType="INTEGER" property="detailId" />
+    <result column="voucher_sn" jdbcType="INTEGER" property="voucherSn" />
+    <result column="voucher_type" jdbcType="VARCHAR" property="voucherType" />
+    <result column="voucher_title" jdbcType="VARCHAR" property="voucherTitle" />
+    <result column="voucher_date" jdbcType="VARCHAR" property="voucherDate" />
+    <result column="start_date" jdbcType="VARCHAR" property="startDate" />
+    <result column="end_date" jdbcType="VARCHAR" property="endDate" />
+    <result column="store_limit" jdbcType="VARCHAR" property="storeLimit" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="collator" jdbcType="VARCHAR" property="collator" />
+    <result column="collate_date" jdbcType="VARCHAR" property="collateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    m.archive_id as archive_id, m.corp_name as corp_name, m.archive_code as archive_code,
+    d.detail_id as detail_id, d.voucher_sn as voucher_sn, d.voucher_type as voucher_type,
+    d.voucher_title as voucher_title, d.voucher_date as voucher_date, d.start_date as start_date,
+    d.end_date as end_date, d.store_limit as store_limit, d.remark as remark, d.collator as collator,
+    d.collate_date as collate_date from cfam_archive m left join cfam_archive_detail d
+    on m.archive_id = d.archive_id
+  </sql>
+  <sql id="conditions">
+    <where>
+      1=1
+      <!--  数据过滤  -->
+      <if test="corpName != null and corpName != ''">
+        AND corp_name like '%' #{corpName} '%'
+      </if>
+      <if test="archiveCode != null and archiveCode != ''">
+        AND archive_code=#{archiveCode}
+      </if>
+      <if test="startDate != null and startDate != ''">
+        AND (start_date>=#{startDate}  OR voucher_date is null)
+      </if>
+      <if test="endDate != null and endDate != ''">
+        AND (end_date <![CDATA[ <= ]]> #{endDate}OR voucher_date is null)
+      </if>
+    </where>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    where m.archive_id = #{archiveId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    <include refid="conditions" />
+    <if test="offset != null and limit != null">
+      limit #{offset}, #{limit}
+    </if>
+  </select>
+
+  <select id="selectTotal" resultType="java.lang.Integer">
+    select count(*) from cfam_archive m left join cfam_archive_detail d
+    on m.archive_id = d.archive_id
+    <include refid="conditions" />
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cfam_archive_detail
+    where detail_id = #{detailId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="archive_id" keyProperty="archiveId" parameterType="com.whfzit.model.ArchiveInOneEntity" useGeneratedKeys="true">
+    insert into cfam_archive_detail (detail_id, voucher_sn, voucher_type, 
+      voucher_title, voucher_date, start_date, 
+      end_date, store_limit, remark, 
+      collator, collate_date)
+    values (#{detailId,jdbcType=INTEGER}, #{voucherSn,jdbcType=INTEGER}, #{voucherType,jdbcType=VARCHAR}, 
+      #{voucherTitle,jdbcType=VARCHAR}, #{voucherDate,jdbcType=VARCHAR}, #{startDate,jdbcType=VARCHAR}, 
+      #{endDate,jdbcType=VARCHAR}, #{storeLimit,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+      #{collator,jdbcType=VARCHAR}, #{collateDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="archive_id" keyProperty="archiveId" parameterType="com.whfzit.model.ArchiveInOneEntity" useGeneratedKeys="true">
+    insert into cfam_archive_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="detailId != null">
+        detail_id,
+      </if>
+      <if test="voucherSn != null">
+        voucher_sn,
+      </if>
+      <if test="voucherType != null">
+        voucher_type,
+      </if>
+      <if test="voucherTitle != null">
+        voucher_title,
+      </if>
+      <if test="voucherDate != null">
+        voucher_date,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="storeLimit != null">
+        store_limit,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="collator != null">
+        collator,
+      </if>
+      <if test="collateDate != null">
+        collate_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="detailId != null">
+        #{detailId,jdbcType=INTEGER},
+      </if>
+      <if test="voucherSn != null">
+        #{voucherSn,jdbcType=INTEGER},
+      </if>
+      <if test="voucherType != null">
+        #{voucherType,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherTitle != null">
+        #{voucherTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherDate != null">
+        #{voucherDate,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="storeLimit != null">
+        #{storeLimit,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="collator != null">
+        #{collator,jdbcType=VARCHAR},
+      </if>
+      <if test="collateDate != null">
+        #{collateDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.whfzit.model.ArchiveInOneEntity">
+    update cfam_archive_detail
+    <set>
+      <if test="archiveId != null">
+        archive_id = #{archiveId,jdbcType=INTEGER},
+      </if>
+      <if test="voucherSn != null">
+        voucher_sn = #{voucherSn,jdbcType=INTEGER},
+      </if>
+      <if test="voucherType != null">
+        voucher_type = #{voucherType,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherTitle != null">
+        voucher_title = #{voucherTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherDate != null">
+        voucher_date = #{voucherDate,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="storeLimit != null">
+        store_limit = #{storeLimit,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="collator != null">
+        collator = #{collator,jdbcType=VARCHAR},
+      </if>
+      <if test="collateDate != null">
+        collate_date = #{collateDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where detail_id = #{detailId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.whfzit.model.ArchiveInOneEntity">
+    update cfam_archive_detail
+    set archive_id = #{archiveId,jdbcType=INTEGER},
+      voucher_sn = #{voucherSn,jdbcType=INTEGER},
+      voucher_type = #{voucherType,jdbcType=VARCHAR},
+      voucher_title = #{voucherTitle,jdbcType=VARCHAR},
+      voucher_date = #{voucherDate,jdbcType=VARCHAR},
+      start_date = #{startDate,jdbcType=VARCHAR},
+      end_date = #{endDate,jdbcType=VARCHAR},
+      store_limit = #{storeLimit,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      collator = #{collator,jdbcType=VARCHAR},
+      collate_date = #{collateDate,jdbcType=VARCHAR}
+    where detail_id = #{detailId,jdbcType=INTEGER}
+  </update>
+</mapper>
