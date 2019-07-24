@@ -6,16 +6,16 @@
     <el-main style="background:#F2F2F2;height:100%">
       <el-card style="height:99.5%">
         <div slot="header">
-          <span>单位名称 <el-input v-model="params.corpName" placeholder="请输入单位名称" style="width:175px; padding-right: 15px" @keypress.enter.native="getData"></el-input></span>
+          <span>单位名称 <el-input v-model="params.corpName" placeholder="请输入单位名称" style="width:175px; padding-right: 15px" @keypress.enter.native="getData(1)"></el-input></span>
           <span>日期范围
-              <el-input v-model="params.startDate" v-on:keypress.enter.native="getData" placeholder="请输入开始日期yyMMdd" style="width:185px;"></el-input>
+              <el-input v-model="params.startDate" v-on:keypress.enter.native="getData(1)" placeholder="请输入开始日期yyMMdd" style="width:185px;"></el-input>
               -
-              <el-input v-model="params.endDate" @keypress.enter.native="getData" placeholder="请输入结束日期yyMMdd" style="width:185px; padding-right: 15px"></el-input>
+              <el-input v-model="params.endDate" @keypress.enter.native="getData(1)" placeholder="请输入结束日期yyMMdd" style="width:185px; padding-right: 15px"></el-input>
               <el-button plain @click="resetData" icon="el-icon-refresh-right"></el-button>
           </span>
 
           <span style="float:right">
-            <el-button plain type="primary" icon="el-icon-search" @click="getData">查询</el-button>
+            <el-button plain type="primary" icon="el-icon-search" @click="getData(1)">查询</el-button>
             <el-upload  :disabled="loading" action="/upload" name="file" style="display: inline" :before-upload="beforeUpload" :on-success="uploadSuccess" :on-error="uploadError">
               <el-button plain icon="el-icon-download" :loading="loading">导入文件</el-button>
             </el-upload>
@@ -75,7 +75,8 @@
                        :page-count=pageCount
                        style="text-align: center"
                        :hide-on-single-page=hosp
-                       @current-change="changePage">
+                       @current-change="changePage"
+                       :current-page="pageIndex">
 
         </el-pagination>
 
@@ -95,6 +96,7 @@ export default {
       tableData: [],
       params: {page: 1, limit: 10, corpName: '', startDate: '', endDate: ''},
       pageCount: 0,
+      pageIndex: 1,
       loading : false,
       errorData:[
        {"archiveCode":"000000-000","archiveId":0,"collateDate":"","collator":"","corpName":"数据获取错误","detailId":0,"endDate":"","remark":"","startDate":"","storeLimit":0,"voucherDate":"0-0","voucherSn":0,"voucherTitle":"-","voucherType":"-"}
@@ -104,8 +106,10 @@ export default {
     }
   },
   methods: {
-    getData: function () {
+    getData: function (pageIdx=1) {
       this.loading=true;
+      this.params.page = pageIdx;
+      this.pageIndex =pageIdx;
       this.$http.get('selectAll', {params: this.params}).then(res=>{
         this.loading=false;
         this.tableData = res.data.dataList;
@@ -124,8 +128,8 @@ export default {
 
     changePage: function(currentPage) {
       console.log(currentPage);
-      this.params.page=currentPage;
-      this.getData();
+      // this.params.page=currentPage;
+      this.getData(currentPage);
     },
     beforeUpload: function(file) {
       this.loading = true;
