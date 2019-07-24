@@ -22,7 +22,7 @@
     d.detail_id as detail_id, d.voucher_sn as voucher_sn, d.voucher_type as voucher_type,
     d.voucher_title as voucher_title, d.voucher_date as voucher_date, d.start_date as start_date,
     d.end_date as end_date, d.store_limit as store_limit, d.remark as remark, d.collator as collator,
-    d.collate_date as collate_date from cfam_archive m left join cfam_archive_detail d
+    d.collate_date as collate_date from cfam_archive m join cfam_archive_detail d
     on m.archive_id = d.archive_id
   </sql>
   <sql id="conditions">
