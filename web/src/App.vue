@@ -8,9 +8,9 @@
         <div slot="header">
           <span>单位名称 <el-input v-model="params.corpName" placeholder="请输入单位名称" style="width:175px; padding-right: 15px" @keypress.enter.native="getData(1)"></el-input></span>
           <span>日期范围
-              <el-input v-model="params.startDate" v-on:keypress.enter.native="getData(1)" placeholder="请输入开始日期yyMMdd" style="width:185px;"></el-input>
+              <el-input v-model="params.startDate" v-on:keypress.enter.native="getData(1)" placeholder="请输入开始日期yyyyMMdd" style="width:185px;"></el-input>
               -
-              <el-input v-model="params.endDate" @keypress.enter.native="getData(1)" placeholder="请输入结束日期yyMMdd" style="width:185px; padding-right: 15px"></el-input>
+              <el-input v-model="params.endDate" @keypress.enter.native="getData(1)" placeholder="请输入结束日期yyyyMMdd" style="width:185px; padding-right: 15px"></el-input>
               <el-button plain @click="resetData" icon="el-icon-refresh-right"></el-button>
           </span>
 
